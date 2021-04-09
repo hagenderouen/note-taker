@@ -1,2 +1,4 @@
 # note-taker
-A simple note taking web application
+A simple note taking web application.
+
+
