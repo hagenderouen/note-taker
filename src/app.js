@@ -28,20 +28,36 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     const note = req.body;
     note.id = uuidv4();
-    
+
     fs.readFile(path.join(__dirname, '../db/db.json'), (err, data) => {
         notes = JSON.parse(data);
         notes.push(note);
         notesJson = JSON.stringify(notes);
 
         fs.writeFile(path.join(__dirname, '../db/db.json'), notesJson, () => {
-            res.json(JSON.stringify(data));
+            res.json(notesJson);
         });
 
     });
 });
 
-// TODO DELETE /api/notes/:id delete the note by id from db.json
+// DELETE /api/notes/:id delete the note by id from db.json
+app.delete('/api/notes/:id', (req, res) => {
+    const { id } = req.params;
+
+    fs.readFile(path.join(__dirname, '../db/db.json'), (err, data) => {
+        const notes = JSON.parse(data);
+        const modNotes = notes.filter(note => note.id !== id);
+        const modNotesJson = JSON.stringify(modNotes)
+
+        fs.writeFile(path.join(__dirname, '../db/db.json'), modNotesJson, (err) => {
+            if (err) throw err;
+            res.json(modNotesJson);
+        });
+
+    }); 
+
+});
 
 // GET * returns index.html
 app.get('*', (req, res) => {
