@@ -2,6 +2,7 @@ const { notDeepStrictEqual } = require('assert');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,7 +27,8 @@ app.get('/api/notes', (req, res) => {
 // POST /api/notes receives note in request body, saves to db.json and returns the note if successful
 app.post('/api/notes', (req, res) => {
     const note = req.body;
-
+    note.id = uuidv4();
+    
     fs.readFile(path.join(__dirname, '../db/db.json'), (err, data) => {
         notes = JSON.parse(data);
         notes.push(note);
@@ -39,7 +41,7 @@ app.post('/api/notes', (req, res) => {
     });
 });
 
-// DELETE /api/notes/:id delete the note by id from db.json
+// TODO DELETE /api/notes/:id delete the note by id from db.json
 
 // GET * returns index.html
 app.get('*', (req, res) => {
